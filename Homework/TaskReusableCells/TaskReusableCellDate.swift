@@ -12,7 +12,6 @@ class TaskReusableCellDate: UITableViewCell {
     lazy var customDatePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
         datePicker.translatesAutoresizingMaskIntoConstraints = false
-
         return datePicker
     }()
     
