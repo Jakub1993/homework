@@ -52,9 +52,6 @@ class TaskSettingsCategoryController: TaskReusableCategoryController, BarButtons
     
     @objc func chooseColor(_ button: UIButton) {
         selectedColor = getColorName(color: colorsArray[button.tag])
-        print(selectedColor)
-        print(colorsArray[button.tag])
-        print(button.tag)
         
         let addBarButtonItem = UIBarButtonItem(title: "Přidat", style: .done, target: self, action: #selector(add))
         let againBarButtonItem = UIBarButtonItem(title: "Znovu", style: .done, target: self, action: #selector(again))
