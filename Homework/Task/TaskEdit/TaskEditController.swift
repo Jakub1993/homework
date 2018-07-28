@@ -114,4 +114,3 @@ class TaskEditController: TaskReusableControllerDetail, BarButtonsConfigarable, 
         } catch _ {}
     }
 }
-

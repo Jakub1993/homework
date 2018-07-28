@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import UserNotifications
 
-class TaskController: UIViewController, UITableViewDelegate, UITableViewDataSource, BarButtonsConfigarable {
+class TaskController: UIViewController, BarButtonsConfigarable {
     let taskCellID = "taskCell"
     var selectedSort = UserDefaults.standard.string(forKey: "sorting") ?? "date"
     var selectedOrder = UserDefaults.standard.bool(forKey: "order")
@@ -29,10 +29,9 @@ class TaskController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchUnfinished()
         setupTaskTable(taskTable: taskTable)
         addBarButtonItems(ofPosition: [.right, .right], ofTitle: ["Nový", "Nastavení"])
-        fetchFinished()
-        fetchUnfinished()
     }
     
     func fetchUnfinished() {
@@ -64,50 +63,6 @@ class TaskController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.present(navigationController, animated: true, completion: nil)
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return tasksUnfinished.count
-        } else {
-            return tasksFinished.count
-        }
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: taskCellID) as! TaskCell
-        
-        if indexPath.section == 0 {
-            cell.nameLabel.text = tasksUnfinished[indexPath.row].name
-            cell.dateLabel.text = covertDate(date: tasksUnfinished[indexPath.row].date!)
-            cell.categoryColor.backgroundColor = getColor(color: tasksUnfinished[indexPath.row].color!)
-        } else {
-            cell.nameLabel.text = tasksFinished[indexPath.row].name
-            cell.dateLabel.text = covertDate(date: tasksFinished[indexPath.row].date!)
-            cell.categoryColor.backgroundColor = getColor(color: tasksFinished[indexPath.row].color!)
-        }
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Nedokončené"
-        } else {
-            return "Dokončené"
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat(50)
-    }
-    
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
     func deleteObject(location: IndexPath, entity: String, oldObject: NSManagedObject, identifier: String) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let managedContext = appDelegate.persistentContainer.viewContext
@@ -119,7 +74,6 @@ class TaskController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 if object == oldObject {
                     let center = UNUserNotificationCenter.current()
                     center.removePendingNotificationRequests(withIdentifiers: [identifier])
-                    
                     managedContext.delete(object)
                 }
                 
@@ -174,7 +128,9 @@ class TaskController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         self.taskTable.deleteRows(at: [indexPath], with: .top)
     }
-    
+}
+
+extension TaskController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let finished = UITableViewRowAction(style: .normal, title: "Dokončené") { action, index in
             self.moveToFinished(indexPath: indexPath)
@@ -218,6 +174,50 @@ class TaskController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return tasksUnfinished.count
+        } else {
+            return tasksFinished.count
+        }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: taskCellID) as! TaskCell
+        
+        if indexPath.section == 0 {
+            cell.nameLabel.text = tasksUnfinished[indexPath.row].name
+            cell.dateLabel.text = covertDate(date: tasksUnfinished[indexPath.row].date!)
+            cell.categoryColor.backgroundColor = getColor(color: tasksUnfinished[indexPath.row].color!)
+        } else {
+            cell.nameLabel.text = tasksFinished[indexPath.row].name
+            cell.dateLabel.text = covertDate(date: tasksFinished[indexPath.row].date!)
+            cell.categoryColor.backgroundColor = getColor(color: tasksFinished[indexPath.row].color!)
+        }
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Nedokončené"
+        } else {
+            return "Dokončené"
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat(50)
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
 }
 

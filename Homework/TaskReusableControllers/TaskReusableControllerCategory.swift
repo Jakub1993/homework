@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class TaskReusableCategoryController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TaskReusableCategoryController: UIViewController {
     let taskReusableCellTypeID = "taskReusableCellType"
     let taskReusableCellEditableID = "taskReusableCellEditable"
     
@@ -27,33 +27,6 @@ class TaskReusableCategoryController: UIViewController, UITableViewDelegate, UIT
         tableView.backgroundColor = UIColor.white
         return tableView
     }()
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if editCategory == false {
-            return categories.count
-        } else {
-            return categories.count + 1
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row != categories.count {
-            let cell = tableView.dequeueReusableCell(withIdentifier: taskReusableCellTypeID) as! TaskReusableCellType
-            cell.descriptionLabel.text = categories[indexPath.row].name
-            cell.categoryColor.backgroundColor = getColor(color: categories[indexPath.row].color!)
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: taskReusableCellEditableID) as! TaskReusableCellEditable
-            cell.descriptionTextField.placeholder = "Zadejte název kategorie"
-            cell.descriptionTextField.becomeFirstResponder()
-            cell.descriptionTextField.text = ""
-            return cell
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
-    }
     
     func fetchCategories() {
         let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
@@ -87,4 +60,31 @@ class TaskReusableCategoryController: UIViewController, UITableViewDelegate, UIT
     }
 }
 
-
+extension TaskReusableCategoryController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if editCategory == false {
+            return categories.count
+        } else {
+            return categories.count + 1
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row != categories.count {
+            let cell = tableView.dequeueReusableCell(withIdentifier: taskReusableCellTypeID) as! TaskReusableCellType
+            cell.descriptionLabel.text = categories[indexPath.row].name
+            cell.categoryColor.backgroundColor = getColor(color: categories[indexPath.row].color!)
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: taskReusableCellEditableID) as! TaskReusableCellEditable
+            cell.descriptionTextField.placeholder = "Zadejte název kategorie"
+            cell.descriptionTextField.becomeFirstResponder()
+            cell.descriptionTextField.text = ""
+            return cell
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+}

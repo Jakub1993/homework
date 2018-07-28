@@ -10,7 +10,7 @@ import UIKit
 import UserNotifications
 import CoreData
 
-class TaskReusableControllerDetail: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TaskReusableControllerDetail: UIViewController {
     let taskReusableCellIDEditable = "taskReusableCellEditable"
     let taskReusableCellIDSwitch = "taskReusableCellSwitch"
     let taskReusableCellIDSelectable = "taskReusableCellSelectable"
@@ -44,6 +44,20 @@ class TaskReusableControllerDetail: UIViewController, UITableViewDelegate, UITab
         setupTaskTable(taskTable: taskTable)
     }
     
+    @objc func switchDidChange(_ sender: UISwitch) {
+        selectedNotification = sender.isOn
+    }
+}
+
+extension TaskReusableControllerDetail: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == 2 {
+            return 200
+        } else {
+            return 50
+        }
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 4
     }
@@ -71,18 +85,6 @@ class TaskReusableControllerDetail: UIViewController, UITableViewDelegate, UITab
             cell.stateLabel.text = selectedCategory
             cell.accessoryType = .disclosureIndicator
             return cell
-        }
-    }
-    
-    @objc func switchDidChange(_ sender: UISwitch) {
-        selectedNotification = sender.isOn
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == 2 {
-            return 200
-        } else {
-            return 50
         }
     }
 }

@@ -10,7 +10,7 @@ import UIKit
 import UserNotifications
 import CoreData
 
-class TaskSettingsController: UIViewController, UITableViewDelegate, UITableViewDataSource, BarButtonConfigarable, UNUserNotificationCenterDelegate {
+class TaskSettingsController: UIViewController, BarButtonConfigarable, UNUserNotificationCenterDelegate {
     weak var delegate: TaskController?
     let taskReusableCellSwitchID = "taskSettingsCellSwitch"
     let taskReusableCellSelectableID = "taskSettingsCellSelectable"
@@ -39,39 +39,6 @@ class TaskSettingsController: UIViewController, UITableViewDelegate, UITableView
         delegate?.fetchUnfinished()
         delegate?.taskTable.reloadData()
         dismiss(animated: true, completion: nil)
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == 1 || indexPath.row == 2 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: taskReusableCellSelectableID) as! TaskReusableCellSelectable
-            cell.accessoryType = .disclosureIndicator
-            if indexPath.row == 1 {
-                cell.descriptionLabel.text = "Kategorie"
-            }
-            
-            if indexPath.row == 2 {
-                cell.descriptionLabel.text = "Řazení"
-                let current = UserDefaults.standard.string(forKey: "sorting") ?? "date"
-                if current == "name" {
-                    cell.stateLabel.text = "Podle abecedy"
-                } else {
-                    cell.stateLabel.text = "Podle data"
-                }
-            }
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: taskReusableCellSwitchID) as! TaskReusableCellSwitch
-
-            cell.selectionStyle = .none
-            cell.notificationSwitch.isOn = UserDefaults.standard.bool(forKey: "notifications")
-            cell.notificationSwitch.isEnabled = UserDefaults.standard.bool(forKey: "notifications")
-            cell.notificationSwitch.addTarget(self, action: #selector(switchDidChange), for: .valueChanged)
-            return cell
-        }
     }
     
     @objc func switchDidChange(_ sender: UISwitch) {
@@ -108,7 +75,9 @@ class TaskSettingsController: UIViewController, UITableViewDelegate, UITableView
         center.removeAllDeliveredNotifications()
         center.removeAllPendingNotificationRequests()
     }
-    
+}
+
+extension TaskSettingsController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
@@ -132,5 +101,37 @@ class TaskSettingsController: UIViewController, UITableViewDelegate, UITableView
             navigationController?.pushViewController(taskSettingsSortVC, animated: true)
         }
     }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row == 1 || indexPath.row == 2 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: taskReusableCellSelectableID) as! TaskReusableCellSelectable
+            cell.accessoryType = .disclosureIndicator
+            if indexPath.row == 1 {
+                cell.descriptionLabel.text = "Kategorie"
+            }
+            
+            if indexPath.row == 2 {
+                cell.descriptionLabel.text = "Řazení"
+                let current = UserDefaults.standard.string(forKey: "sorting") ?? "date"
+                if current == "name" {
+                    cell.stateLabel.text = "Podle abecedy"
+                } else {
+                    cell.stateLabel.text = "Podle data"
+                }
+            }
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: taskReusableCellSwitchID) as! TaskReusableCellSwitch
+            
+            cell.selectionStyle = .none
+            cell.notificationSwitch.isOn = UserDefaults.standard.bool(forKey: "notifications")
+            cell.notificationSwitch.isEnabled = UserDefaults.standard.bool(forKey: "notifications")
+            cell.notificationSwitch.addTarget(self, action: #selector(switchDidChange), for: .valueChanged)
+            return cell
+        }
+    }
 }
-
