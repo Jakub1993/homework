@@ -30,6 +30,7 @@ class TaskController: UIViewController, BarButtonsConfigarable {
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchUnfinished()
+        fetchFinished()
         setupTaskTable(taskTable: taskTable)
         addBarButtonItems(ofPosition: [.right, .right], ofTitle: ["Nový", "Nastavení"])
     }
