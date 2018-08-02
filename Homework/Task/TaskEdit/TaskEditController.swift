@@ -61,6 +61,7 @@ class TaskEditController: TaskReusableControllerDetail, BarButtonsConfigarable, 
         }
         
         editTask(entity: "TasksUnfinished")
+        delegate?.fetchUnfinished()
         delegate?.taskTable.reloadData()
         dismiss(animated: true, completion: nil)
     }
@@ -111,6 +112,8 @@ class TaskEditController: TaskReusableControllerDetail, BarButtonsConfigarable, 
                 }
             }
             try managedContext.save()
-        } catch _ {}
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
     }
 }

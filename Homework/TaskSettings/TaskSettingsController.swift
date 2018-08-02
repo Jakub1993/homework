@@ -58,7 +58,9 @@ class TaskSettingsController: UIViewController, BarButtonConfigarable, UNUserNot
                 object.setValue(false, forKeyPath: "notification")
             }
             try managedContext.save()
-        } catch _ {}
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
         
         tasksFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "TasksUnfinished")
         do {
@@ -67,7 +69,9 @@ class TaskSettingsController: UIViewController, BarButtonConfigarable, UNUserNot
                 object.setValue(false, forKeyPath: "notification")
             }
             try managedContext.save()
-        } catch _ {}
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
         
         UserDefaults.standard.set(false, forKey: "notifications")
         

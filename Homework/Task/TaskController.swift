@@ -83,7 +83,9 @@ class TaskController: UIViewController, BarButtonsConfigarable {
                 }
             }
             try managedContext.save()
-        } catch _ {}
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
     }
     
     func moveObject(entity: String, name: String, notification: Bool, date: Date, category: String, color: String, identifier: String) {
