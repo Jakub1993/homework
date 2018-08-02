@@ -164,12 +164,14 @@ extension TaskController: UITableViewDelegate, UITableViewDataSource {
             taskEditVC.selectedCategory = tasksUnfinished[indexPath.row].category!
             taskEditVC.selectedIdentifier = tasksUnfinished[indexPath.row].identifier!
             taskEditVC.selectedIndexPath = indexPath
+            taskEditVC.selectedColor = tasksUnfinished[indexPath.row].color!
         } else {
             taskEditVC.selectedDate = tasksFinished[indexPath.row].date!
             taskEditVC.selectedName = tasksFinished[indexPath.row].name!
             taskEditVC.selectedNotification = tasksFinished[indexPath.row].notification
             taskEditVC.selectedCategory = tasksFinished[indexPath.row].category!
             taskEditVC.selectedIdentifier = tasksFinished[indexPath.row].identifier!
+            taskEditVC.selectedColor = tasksFinished[indexPath.row].color!
         }
         taskEditVC.selectedSection = indexPath.section
         present(navigationController, animated: true, completion: nil)
