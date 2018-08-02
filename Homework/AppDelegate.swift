@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         let tasksFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "TasksUnfinished")
         do {
-            let objects = try! managedContext.fetch(tasksFetch) as! [TasksUnfinished]
+            let objects = try managedContext.fetch(tasksFetch) as! [TasksUnfinished]
             for object in objects {
                 if object.identifier == identifier {
                     object.notification = false
